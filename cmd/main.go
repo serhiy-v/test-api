@@ -1,7 +1,23 @@
 package main
 
-import "github.com/serhiy-v/test-api/pkg"
+import (
+	"context"
+
+	"github.com/serhiy-v/test-api/pkg"
+	db2 "github.com/serhiy-v/test-api/pkg/db"
+)
 
 func main()  {
-	pkg.RunServer()
+	ctx := context.Background()
+
+	postgresClient := pkg.NewConnection(ctx)
+	defer postgresClient.Close()
+
+	db := db2.New(postgresClient)
+
+	serv := pkg.NewServer(*db)
+
+	serv.RunServer()
+
+
 }
