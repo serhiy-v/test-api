@@ -16,9 +16,9 @@ type Server struct {
 	db db.Database
 }
 
-func NewServer(db db.Database) *Server {
+func NewServer(db db.Database, router handlers.BaseHandler) *Server {
 	return &Server{
-		router: handlers.NewRouter(),
+		router: router.NewRouter(),
 		db: db,
 	}
 }

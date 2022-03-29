@@ -8,30 +8,29 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	db2 "github.com/serhiy-v/test-api/pkg/db"
 	"github.com/serhiy-v/test-api/pkg/models"
 )
 
-var ctx context.Context
-
-func CreateItem(w http.ResponseWriter, r *http.Request){
+func (h *BaseHandler)CreateItem(w http.ResponseWriter, r *http.Request){
+	ctx := context.Background()
 	var item models.Item
 	err := json.NewDecoder(r.Body).Decode(&item)
 	if err != nil {
 		log.Println("Unable to get item from request")
 	}
-	err = db2.Database.CreateItem(ctx,item)
+	err = h.itemRepo.CreateItem(ctx, item)
 	if err != nil{
 		log.Println("Unable to create")
 	}
 }
 
-func ShowItem(w http.ResponseWriter, r *http.Request)  {
+func (h *BaseHandler)ShowItem(w http.ResponseWriter, r *http.Request)  {
+	ctx := context.Background()
 	params := mux.Vars(r)
 	id,err  := strconv.Atoi(params["id"])
 	if err != nil {
 		log.Println("Unable to get id from request")
 	}
-	res, err := db2.Database.GetItem(ctx,id)
+	res, err := h.itemRepo.GetItem(ctx, id)
 	json.NewEncoder(w).Encode(res)
 }

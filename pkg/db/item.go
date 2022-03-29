@@ -6,9 +6,7 @@ import (
 	"github.com/serhiy-v/test-api/pkg/models"
 )
 
-var ctx context.Context
-
-func (s *Database) CreateItem(item models.Item) error {
+func (s *Database) CreateItem(ctx context.Context, item models.Item) error {
 	q := "INSERT INTO items (name,description) VALUES ($1,$2)"
 	_,err := s.db.Exec(ctx, q, item.Name, item.Description)
 	if err != nil {
@@ -17,10 +15,10 @@ func (s *Database) CreateItem(item models.Item) error {
 	return nil
 }
 
-func (s *Database) GetItem(id int) (models.Item, error){
+func (s *Database) GetItem(ctx context.Context, id int) (models.Item, error){
 	var item models.Item
-	q := "SELECT id, name, descriptions FROM projects WHERE id = $1"
-	err := s.db.QueryRow(ctx,q,id).Scan(&item)
+	q := "SELECT id, name, description FROM items WHERE id = $1"
+	err := s.db.QueryRow(ctx,q,id).Scan(&item.Id,&item.Name,&item.Description)
 	if err != nil{
 		return models.Item{},err
 	}
